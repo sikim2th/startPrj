@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.spring.dao.BbsDAO">
+
+<insert id="insert">
+insert into tbl_board(subject,content,writer)
+values (#{subject}, #{content}, #{writer})
+</insert>
+
+
+<select id="read" resultType="BbsVO">
+select bid,subject,content,writer,regdate,hit
+from tbl_board
+where 1=1
+and bid=#{bid}
+</select>
+
+<update id="update">
+update tbl_board set subject=#{subject}, content=#{content}
+where bid=#{bid}
+</update>
+
+<delete id="delete">
+delete from tbl_board
+where bid=#{bid}
+</delete>
+
+<select id="list" resultType="BbsVO">
+<![CDATA[
+select bid,subject, content, writer, regdate, hit
+from tbl_board
+where bid > 0
+order by bid desc, regdate
+]]> 
+</select>
+
+<select id="listPage" resultType="BbsVO">
+<![CDATA[
+select bid,subject, content, writer, regdate, hit
+from tbl_board
+where bid > 0
+order by bid desc, regdate
+limit #{page}, 10
+]]> 
+</select>
+
+<select id="listCriteria" resultType="BbsVO">
+<![CDATA[
+select bid,subject, content, writer, regdate, hit
+from tbl_board
+where bid > 0
+order by bid desc, regdate
+limit #{startPage}, #{numPerPage}
+]]> 
+</select>
+
+<select id="countData" resultType="int">
+<![CDATA[
+SELECT count(1) FROM tbl_board where bid > 0
+]]>
+</select>
+
+<!-- Mybatis에서 제공하는 <include>, <sql> -->
+<sql id="findSQL">
+	<if test="findType != null">
+		<if test="findType == 'S'.toString()">
+			and subject like concat('%',#{keyword}, '%')
+		</if>
+		<if test="findType == 'C'.toString()">
+			and content like concat('%',#{keyword}, '%')
+		</if>
+		<if test="findType == 'W'.toString()">
+			and writer like concat('%', #{keyword}, '%')
+		</if>
+		<if test="findType == 'SC'.toString()">
+			and (subject like concat('%',#{keyword}, '%') 
+				or content like concat('%',#{keyword}, '%'))
+		</if>
+		<if test="findType == 'CW'.toString()">
+			and (content like concat('%',#{keyword},'%') 
+				or writer like concat('%',#{keyword},'%'))
+		</if>
+		<if test="findType == 'SCW'.toString()">
+			and (subject like concat('%',#{keyword},'%') 
+				or content like concat('%',#{keyword},'%') 
+				or writer like concat('%',#{keyword},'%'))
+		</if>
+	</if>
+</sql>
+
+<select id="listFind" resultType="BbsVO">
+<![CDATA[
+select *
+from tbl_board
+where bid > 0
+]]>
+<include refid="findSQL"></include>
+<![CDATA[
+order by bid desc, regdate
+limit #{startPage}, #{numPerPage}
+]]>
+</select>
+
+<select id="findCountData" resultType="int">
+<![CDATA[
+select count(1)
+from tbl_board
+where bid > 0
+]]>
+<include refid="findSQL"></include>
+</select>
+
+</mapper>

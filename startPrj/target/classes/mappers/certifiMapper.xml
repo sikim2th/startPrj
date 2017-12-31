@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.spr.CertifiDAO">
+
+<delete id="deleteTempKey">
+delete from tbl_smsauth
+where phone=#{phone}
+</delete>
+
+<insert id="insertCertificationKey"  >
+insert into tbl_smsauth( phone, temp_key) values
+(#{phone}, #{tempKey})
+</insert>
+
+<select id="getTempKey" resultType="string">
+select temp_key
+from tbl_smsauth
+where 1=1
+and phone=#{phone}
+</select>
+
+</mapper>

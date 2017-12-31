@@ -1,0 +1,28 @@
+
+#trim(where ,set)
+
+//맨 끝에 콤마(,)를 제거하는 경우
+<update id="updateMember" parameterType="com.spring.xxxxVO">
+	update member 
+	<trim prefix="set" suffixOverrides=",">
+		<if test="userName != null">userName = #{userName},</if>
+		<if test="email != null">email = #{email},</if>
+		<if test="tel != null">test = #{tel}</if>
+	</trim>
+	where id = #{id}
+</update>
+
+//맨 앞에 연산자(AND, OR)를 제거하는 경우
+<select id="selectInfo" parameterType="com.spring.xxxxVO" resultType="memberResultMap">
+	select * from Employee
+	<trim prefix="where" prefixOverrides="AND | OR">
+		<if test="userName != null">userName = #{userName}</if>
+		<if test="pwd != null">and pwd = #{pwd}</if>
+		<if test="email != null">and email = #{email}</if>
+	</trim>
+</select>
+
+#forEach
+<forEach item="item" index="idx" collection="list" open="(" separator="," close=")">
+	#{item}
+</forEach>
